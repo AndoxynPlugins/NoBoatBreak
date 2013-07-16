@@ -18,7 +18,12 @@ package net.daboross.bukkitdev.noboatbreak;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.vehicle.VehicleCollisionEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -28,22 +33,29 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class NoBoatBreak extends JavaPlugin implements Listener {
 
-    @Override
-    public void onEnable() {
-        PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(this, this);
-    }
+	@Override
+	public void onEnable() {
+		PluginManager pm = getServer().getPluginManager();
+		pm.registerEvents(this, this);
+	}
 
-    @Override
-    public void onDisable() {
-    }
+	@Override
+	public void onDisable() {
+	}
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("")) {
-        } else {
-            sender.sendMessage("NoBoatBreak doesn't know about the command /" + cmd);
-        }
-        return true;
-    }
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		sender.sendMessage("NoBoatBreak doesn't know about the command /" + cmd);
+		return true;
+	}
+
+	@EventHandler
+	public void onBoatBreak(VehicleDestroyEvent vde) {
+		if (vde.getAttacker() instanceof Player) {
+			return;
+		}
+		if (vde.getVehicle().getType().equals(EntityType.BOAT)) {
+			vde.setCancelled(true);
+		}
+	}
 }
